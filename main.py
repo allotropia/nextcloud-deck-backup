@@ -26,7 +26,7 @@ if(mode == 'backup' or mode == None):
     with open(os.path.join(args.directory, FILE_NAME), 'w') as outfile:
         json.dump(data, outfile, indent=4)
 
-    for warn in dd.getAllWaringns():
+    for warn in dd.getAllWarnings():
         print(warn)
 
 elif(mode == 'send'):
@@ -36,7 +36,7 @@ elif(mode == 'send'):
         data = json.load(json_file)
         ds.sendBoard(data)
 
-    for warn in ds.getAllWaringns():
+    for warn in ds.getAllWarnings():
         print(warn)
 
 else:

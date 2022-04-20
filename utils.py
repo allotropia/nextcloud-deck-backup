@@ -15,6 +15,7 @@ class DeckDownloader():
         super(DeckDownloader, self).__init__()
         self.__urlFrom = urlFrom
         self.__authFrom = authFrom
+        self._warnings = []
 
     def __getBoards(self):
         response = requests.get(
@@ -64,6 +65,9 @@ class DeckDownloader():
 
         return boards
 
+    def getAllWarnings(self):
+        return self._warnings
+
 
 class DeckSender():
 
@@ -71,6 +75,7 @@ class DeckSender():
         super(DeckSender, self).__init__()
         self.__urlTo = urlTo
         self.__authTo = authTo
+        self._warnings = []
 
     def __createBoard(self, title, color):
         response = requests.post(
@@ -206,3 +211,6 @@ class DeckSender():
                 for card in stack['cards']:
                     self.__copyCard(card, createdBoard['id'],
                                     stacksMap[stack['id']], labelsMap)
+
+    def getAllWarnings(self):
+        return self._warnings
