@@ -1,7 +1,6 @@
 """
 Based on https://gist.github.com/svbergerem/5914d7f87764901aefddba125af99938.
 """
-from progress.bar import Bar
 import requests
 import urllib3
 
@@ -10,42 +9,7 @@ requests.packages.urllib3.disable_warnings(
     urllib3.exceptions.InsecureRequestWarning)
 
 
-class ProgressListener:
-
-    def __init__(self) -> None:
-        self.__bar = None
-
-    def update(self, total: int) -> None:
-        if(self.__bar == None):
-            self.__bar = Bar('Progress', max=total)
-        else:
-            self.__bar.next()
-
-    def finishBar(self) -> None:
-        if(self.__bar != None):
-            self.__bar.finish()
-
-
-class ProgressObserver:
-
-    def __init__(self) -> None:
-        self.__listeners = []
-        self._warnings = []
-
-    def addListener(self, listener: ProgressListener) -> None:
-        self.__listeners.append(listener)
-
-    def update(self, total: int) -> None:
-        for listener in self.__listeners:
-            listener.update(total)
-
-    def getAllWaringns(self) -> list:
-        result = self._warnings.copy()
-        self._warnings = []
-        return result
-
-
-class DeckDownloader(ProgressObserver):
+class DeckDownloader():
 
     def __init__(self, urlFrom: str, authFrom: tuple) -> None:
         super(DeckDownloader, self).__init__()
@@ -87,12 +51,8 @@ class DeckDownloader(ProgressObserver):
 
     def fetchBoards(self):
         boards = self.__getBoards()
-        totalJobAmount = len(boards)
-        self.update(totalJobAmount)
 
         for board in boards:
-            self.update(totalJobAmount)
-
             boardDetails = self.__getBoardDetails(board['id'])
             board['details'] = boardDetails
 
@@ -105,7 +65,7 @@ class DeckDownloader(ProgressObserver):
         return boards
 
 
-class DeckSender(ProgressObserver):
+class DeckSender():
 
     def __init__(self, urlTo: str, authTo: tuple) -> None:
         super(DeckSender, self).__init__()
@@ -217,16 +177,8 @@ class DeckSender(ProgressObserver):
             self.__archiveCard(createdCard, boardIdTo, stackIdTo)
 
     def sendBoard(self, boards):
-        totalJobAmount = len(boards)
-        self.update(totalJobAmount)
-
         for board in boards:
             createdBoard = self.__createBoard(board['title'], board['color'])
-            self.update(totalJobAmount)
-
-            totalJobAmount = len(board['archived']) + \
-                len(board['stacks']) + \
-                len(board['details']['labels'])
 
             labelsMap = {}
             for label in board['details']['labels']:

@@ -1,4 +1,4 @@
-from utils import DeckDownloader, DeckSender, ProgressListener
+from utils import DeckDownloader, DeckSender
 import json
 import os
 import argparse
@@ -17,11 +17,9 @@ args = parser.parse_args()
 mode = args.mode
 url = args.host
 auth = (args.username, args.passwd)
-listener = ProgressListener()
 
 if(mode == 'backup' or mode == None):
     dd = DeckDownloader(url, auth)
-    dd.addListener(listener)
 
     data = dd.fetchBoards()
 
@@ -33,7 +31,6 @@ if(mode == 'backup' or mode == None):
 
 elif(mode == 'send'):
     ds = DeckSender(url, auth)
-    ds.addListener(listener)
 
     with open(os.path.join(args.directory, FILE_NAME)) as json_file:
         data = json.load(json_file)
@@ -44,5 +41,3 @@ elif(mode == 'send'):
 
 else:
     raise ValueError('Unknown mode or missing properites.')
-
-listener.finishBar()
