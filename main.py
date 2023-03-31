@@ -34,6 +34,13 @@ find below the agenda for our
 TDF board meeting with a public part, and followed by a private part on {0} at https://jitsi.documentfoundation.org/TDFBoard
 For time zone conversion, see e.g. {1}
 
+The agenda and minutes are at https://nextcloud.documentfoundation.org/f/<foo>
+
+Please note, that per board decision from 2023-03-08, board calls will
+be audio-recorded privately, for easier minuting:
+https://listarchives.documentfoundation.org/www/board-discuss/2023/msg00060.html
+
+
 ## AGENDA:
 
 ### Public Part
