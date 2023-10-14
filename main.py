@@ -29,21 +29,18 @@ meeting_time = parsedate(args.meetingtime)
 header = """
 Dear Community,
 
-find below the agenda for our
+find below the agenda for our TDF board meeting with a public section, and followed by a private section on {0} at https://jitsi.documentfoundation.org/TDFBoard
 
-TDF board meeting with a public part, and followed by a private part on {0} at https://jitsi.documentfoundation.org/TDFBoard
 For time zone conversion, see e.g. {1}
 
-The agenda and minutes are at https://nextcloud.documentfoundation.org/f/<foo>
+The agenda and minutes are at <https://nextcloud.documentfoundation.org/f/foo>
 
-Please note, that per board decision from 2023-03-08, board calls will
-be audio-recorded privately, for easier minuting:
-https://listarchives.documentfoundation.org/www/board-discuss/2023/msg00060.html
+Please note, that per board decision from 2023-03-08, board calls will be audio-recorded privately, for easier minuting: https://community.documentfoundation.org/t/vote-start-audio-recording-tdf-board-calls-again-for-better-minuting/9262/8
 
 
 ## AGENDA:
 
-### Public Part
+### Public Section
 
 """
 header = header.format(
@@ -66,13 +63,13 @@ for deck in data:
         for stack in deck["stacks"]:
             if stack["title"] == args.stack and "cards" in stack:
                 for card in stack["cards"]:
-                    # cards with label 'private' - skip here
+                    # cards with label 'private' or 'member-private' - skip here
                     if not [x for x in card["labels"]
-                            if x["title"] == 'private']:
+                            if x["title"] == 'private' or x["title"] == 'member-private']:
                         labels = ", ".join(
                             [label['title']
                              for label in card["labels"]
-                             if label["title"] != 'private'])
+                             if label["title"] != 'private' and label["title"] != 'member-private'])
                         owners = ", ".join(
                             [user['participant']['displayname']
                              for user in card["assignedUsers"]])
@@ -89,7 +86,38 @@ for deck in data:
                         output += entry
 
 output += """
-### Private Part
+### Member-Private Section
+
+"""
+
+# dump member-private cards from proper list
+for deck in data:
+    if deck["title"] == args.deck:
+        for stack in deck["stacks"]:
+            if stack["title"] == args.stack and "cards" in stack:
+                for card in stack["cards"]:
+                    # cards with label 'member-private' - only pick those here
+                    if [x for x in card["labels"] if x["title"] == 'member-private']:
+                        labels = ", ".join(
+                            [label['title'] for label in card["labels"]
+                             if label["title"] != 'member-private'])
+                        owners = ", ".join(
+                            [user['participant']['displayname']
+                             for user in card["assignedUsers"]])
+                        if labels:
+                            entry = f"{item}. {labels}: {card['title']} ({owners}, {args.duration} mins)"
+                        else:
+                            entry = f"{item}. {card['title']} ({owners}, {args.duration} mins)"
+                        entry += "\n"
+                        wrapper.initial_indent = '   '
+                        wrapper.subsequent_indent = '   '
+                        entry += wrapper.fill(f"{card['description']}")
+                        entry += "\n"
+                        item += 1
+                        output += entry
+
+output += """
+### Board-Private Section
 
 """
 
