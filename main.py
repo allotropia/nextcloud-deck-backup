@@ -29,7 +29,7 @@ meeting_time = parsedate(args.meetingtime)
 header = """
 Dear Community,
 
-find below the agenda for our TDF board meeting with a public section, and followed by a private section on {0} at https://jitsi.documentfoundation.org/TDFBoard
+find below the agenda for our TDF board meeting with a public section, and followed by a private section on {0} at <https://bbb.documentfoundation.org/rooms/egz-9hg-fcg-k1p/join>
 
 For time zone conversion, see e.g. {1}
 
@@ -45,7 +45,7 @@ Please note, that per board decision from 2023-03-08, board calls will be audio-
 """
 header = header.format(
     meeting_time.strftime('%A, %B %d at %H%M Berlin time'),
-    args.worldclockurl+"&iso="+meeting_time.strftime('%Y%m%dT%H'))
+    args.worldclockurl+"&iso="+meeting_time.strftime('%Y%m%dT%H%M'))
 header = wrapper.fill(text=header)
 
 item = 1
